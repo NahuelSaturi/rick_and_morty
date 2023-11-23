@@ -1,14 +1,19 @@
-import { useState } from 'react';
 import './App.css';
-import Cards from './components/cards/Cards.jsx';
-import Nav from './components/nav/Nav.jsx';
+import { useEffect, useState } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
+import About from './components/about/About.jsx';
+import Cards from './components/cards/Cards.jsx';
+import Detail from './components/detail/detail.jsx';
+import Form from './components/form/Form.jsx';
+import Nav from './components/nav/Nav.jsx';
 function App() {
+   const {pathname}= useLocation()
    const [characters, setCharacters] = useState([]);
-   const URL = 'https://rym2.up.railway.app/api/character/';
+   const URL = 'https://rym2.up.railway.app/api/character';
    const API_KEY = 'henrystaff'
    function onSearch(id) {
-      axios(`${URL}${id}?key=${API_KEY}`).then(
+      axios(`${URL}/${id}?key=${API_KEY}`).then(
          ({ data }) => {
             if (data.name) {
                setCharacters([...characters, data]);
@@ -18,17 +23,54 @@ function App() {
          }
       );
    }
+   //!login
+   const navigate = useNavigate();
+   const [access, setAccess] = useState(false);
+   const EMAIL = 'ejemplo@gmail.com';
+   const PASSWORD = 'pass1234';
+   
+   function login(userData) {
+      if (userData.password === PASSWORD && userData.email === EMAIL) {
+         setAccess(true);
+         navigate('/home');
+      }
+   }
    const onClose = (id) =>{
       setCharacters(characters.filter(char => char.id !== Number(id)))
    }
+   useEffect(() => {
+      // !access && navigate('/');
+      !access && navigate('/home');
+   }, [access]);
 
    return (
       <div className='App'>
-         <Nav onSearch={onSearch} />
-         <hr />
+         {console.log(pathname)}
+         {
+            pathname !== "/" ? <Nav onSearch={onSearch}/> : null
+         }
+         
+         
+         <Routes>
+            <Route
+               path='/'
+               element={<Form login={login}/>}
+            />
+            <Route
+               path='/home'
+               element={<Cards id='cardsestilo' characters={characters} onClose={onClose} />}
+            />
+            <Route
+               path='/about'
+               element={<About />}
+            />
+            <Route
+               path='/detail/:id'
+               element={<Detail />}
+            />
+         </Routes>
+         
       
-         <Cards id='cardsestilo' characters={characters} onClose={onClose} />
-
       </div>
    );
 }

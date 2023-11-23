@@ -1,0 +1,15 @@
+#loginform{
+    background-image: linear-gradient(
+        rgba(0, 0, 0, 0.693),
+        rgba(0, 0, 0, 0.693)
+        ) , url('https://steamuserimages-a.akamaihd.net/ugc/950718995351241361/D107C1962EEE0313BF4F524E5D2854D52701664F/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false') ;
+    
+    width: 500px;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: antiquewhite;
+    margin: auto;
+    /* filter: brightness(50%); */
+}
