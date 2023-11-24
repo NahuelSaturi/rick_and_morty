@@ -7,7 +7,11 @@ import Cards from './components/cards/Cards.jsx';
 import Detail from './components/detail/detail.jsx';
 import Form from './components/form/Form.jsx';
 import Nav from './components/nav/Nav.jsx';
+import Favorites from './components/favorites/Favorites.jsx';
+import { useDispatch } from 'react-redux';
+import { removeFav } from './redux/actions.js';
 function App() {
+   const dispatch = useDispatch();
    const {pathname}= useLocation()
    const [characters, setCharacters] = useState([]);
    const URL = 'https://rym2.up.railway.app/api/character';
@@ -37,6 +41,7 @@ function App() {
    }
    const onClose = (id) =>{
       setCharacters(characters.filter(char => char.id !== Number(id)))
+      dispatch(removeFav(id))
    }
    useEffect(() => {
       // !access && navigate('/');
@@ -59,6 +64,10 @@ function App() {
             <Route
                path='/home'
                element={<Cards id='cardsestilo' characters={characters} onClose={onClose} />}
+            />
+            <Route
+               path='/favorites'
+               element={<Favorites onClose={onClose}/>}
             />
             <Route
                path='/about'
