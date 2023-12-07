@@ -13,9 +13,11 @@ export default function Detail(props) {
 
 
    useEffect(() => {
-      axios(`${URL}/${id}?key=${API_KEY}`).then(
+      // axios(`${URL}/${id}?key=${API_KEY}`)
+      axios(`http://localhost:3001/rickandmorty/character/${id}`)
+      .then(
          ({ data }) => {
-            console.log(data);
+            // console.log(data);
             if (data.name) {
                setCharacter(data);
             } else {
