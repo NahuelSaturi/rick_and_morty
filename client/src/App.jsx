@@ -14,21 +14,28 @@ function App() {
    const dispatch = useDispatch();
    const {pathname}= useLocation()
    const [characters, setCharacters] = useState([]);
-   const URL = 'https://rym2.up.railway.app/api/character';
    const API_KEY = 'henrystaff'
-   function onSearch(id) {
-      // axios(`${URL}/${id}?key=${API_KEY}`)
-      axios(`http://localhost:3001/rickandmorty/character/${id}`)
-      .then(
-         ({ data }) => {
-            if (data.name) {
-               setCharacters([...characters, data]);
-            } else {
-               window.alert('¡No hay personajes con este ID!');
-            }
+   async function onSearch(id) {
+      try {
+         const URL = 'https://rickandmortyapi.com/api/character';
+         const charId = characters.filter(char => char.id === Number(id))
+         if (charId.length) {
+            return alert(`${charId[0].name} ya existe`)
+
          }
-      );
+
+         const {data} = await axios.get(`${URL}/${id}`)
+         if (data.name) {
+            setCharacters([...characters, data]);
+            navigate("/home")
+         } else {
+            alert('¡el id debe ser un numero entre 1 y 826!');
+         }
+      } catch (error) {
+         alert(error.message);
+      }
    }
+
    //!login
    const navigate = useNavigate();
    const [access, setAccess] = useState(false);
@@ -41,14 +48,23 @@ function App() {
    //       navigate('/home');
    //    }
    // }
-   function login(userData) {
-      const { email, password } = userData;
-      const URL = 'http://localhost:3001/rickandmorty/login/';
-      axios(URL + `?email=${email}&password=${password}`).then(({ data }) => {
+   async function login(userData) {
+      try {
+         const { email, password } = userData;
+         const URL = 'http://localhost:3001/rickandmorty/login/';
+         const {data} = await axios(URL + `?email=${email}&password=${password}`)
          const { access } = data;
-         setAccess(data);
-         access && navigate('/home');
-      });
+         if (access) {
+            setAccess(data);
+            access && navigate('/home');
+            
+         } else {
+            alert('credenciales incorrectas')
+         }
+      } catch (error) {
+         alert(error.message)
+      }
+
    }
    const onClose = (id) =>{
       setCharacters(characters.filter(char => char.id !== Number(id)))
